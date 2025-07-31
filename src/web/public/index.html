@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Content Creator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .main-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin-top: 30px;
+            display: none;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .result-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .download-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background: #218838;
+            transform: translateY(-1px);
+        }
+
+        .content-preview {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e1e5e9;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .content-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .content-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .content-day {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .content-topic {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .content-caption {
+            margin-bottom: 8px;
+            line-height: 1.5;
+            color: #555;
+        }
+
+        .content-hashtags {
+            color: #667eea;
+            font-size: 14px;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #f5c6cb;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-online {
+            background: #28a745;
+        }
+
+        .status-offline {
+            background: #dc3545;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .main-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Social Media Content Creator</h1>
+            <p>Generate engaging content plans with AI-powered creativity</p>
+        </div>
+
+        <div class="main-card">
+            <form id="contentForm">
+                <div class="form-group">
+                    <label for="brandTheme">Brand Theme *</label>
+                    <input 
+                        type="text" 
+                        id="brandTheme" 
+                        class="form-control" 
+                        placeholder="e.g., Fitness for Busy Professionals"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="duration">Content Duration</label>
+                    <select id="duration" class="form-control">
+                        <option value="7">7 days</option>
+                        <option value="15">15 days</option>
+                        <option value="30" selected>30 days</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn" id="generateBtn">
+                    🎯 Generate Content Plan
+                </button>
+            </form>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Creating your content plan... This may take a moment.</p>
+            </div>
+
+            <div id="message"></div>
+        </div>
+
+        <div class="result-card" id="resultCard">
+            <div class="result-header">
+                <div class="result-title">📋 Content Plan Generated</div>
+                <button class="download-btn" id="downloadBtn">
+                    📥 Download CSV
+                </button>
+            </div>
+            <div class="content-preview" id="contentPreview">
+                <!-- Content preview will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('contentForm');
+        const loading = document.getElementById('loading');
+        const message = document.getElementById('message');
+        const resultCard = document.getElementById('resultCard');
+        const contentPreview = document.getElementById('contentPreview');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const generateBtn = document.getElementById('generateBtn');
+
+        let currentResult = null;
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const brandTheme = document.getElementById('brandTheme').value.trim();
+            const duration = parseInt(document.getElementById('duration').value);
+
+            if (!brandTheme) {
+                showMessage('Please enter a brand theme', 'error');
+                return;
+            }
+
+            // Show loading
+            loading.style.display = 'block';
+            resultCard.style.display = 'none';
+            message.innerHTML = '';
+            generateBtn.disabled = true;
+
+            try {
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        brandTheme,
+                        duration
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    currentResult = result;
+                    showResult(result);
+                    showMessage('Content plan generated successfully!', 'success');
+                } else {
+                    showMessage(`Error: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showMessage(`Network error: ${error.message}`, 'error');
+            } finally {
+                loading.style.display = 'none';
+                generateBtn.disabled = false;
+            }
+        });
+
+        downloadBtn.addEventListener('click', () => {
+            if (currentResult && currentResult.outputFile) {
+                window.open(`/api/download/${currentResult.outputFile}`, '_blank');
+            }
+        });
+
+        function showMessage(text, type) {
+            message.innerHTML = `<div class="${type}">${text}</div>`;
+        }
+
+        function showResult(result) {
+            contentPreview.innerHTML = '';
+            
+            result.content.slice(0, 10).forEach((item, index) => {
+                const contentItem = document.createElement('div');
+                contentItem.className = 'content-item';
+                contentItem.innerHTML = `
+                    <div class="content-day">Day ${index + 1}</div>
+                    <div class="content-topic">${item.topic}</div>
+                    <div class="content-caption">${item.caption}</div>
+                    <div class="content-hashtags">${item.hashtags}</div>
+                `;
+                contentPreview.appendChild(contentItem);
+            });
+
+            if (result.content.length > 10) {
+                const moreItem = document.createElement('div');
+                moreItem.className = 'content-item';
+                moreItem.innerHTML = `
+                    <div class="content-topic">... and ${result.content.length - 10} more days of content!</div>
+                    <div class="content-caption">Download the CSV file to see the complete content plan.</div>
+                `;
+                contentPreview.appendChild(moreItem);
+            }
+
+            resultCard.style.display = 'block';
+        }
+
+        // Check API status on load
+        async function checkStatus() {
+            try {
+                const response = await fetch('/api/status');
+                const result = await response.json();
+                
+                if (result.success) {
+                    const status = result.status;
+                    console.log('API Status:', status);
+                }
+            } catch (error) {
+                console.log('Could not check API status');
+            }
+        }
+
+        checkStatus();
+    </script>
+</body>
+</html> 
