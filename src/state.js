@@ -2,99 +2,234 @@
  * State management for the Social Media Content Creator Agent
  */
 
-export class ContentCreatorState {
-  constructor(brandTheme, duration = 30) {
-    this.brandTheme = brandTheme;
-    this.duration = duration;
-    this.topics = [];
-    this.content = [];
-    this.formattedContent = [];
-    this.outputFile = null;
+export class LinkedInPersonalBrandingState {
+  constructor() {
+    this.userId = null;
+    this.accessToken = null;
+    this.refreshToken = null;
+    this.linkedinProfileId = null;
+    
+    // Profile and Analysis
+    this.profileAnalysis = null;
+    this.industryResearch = null;
+    
+    // Content Strategy
+    this.contentStrategy = null;
+    this.calendar = null;
+    
+    // Automated Posting
+    this.automatedPosting = null;
+    
+    // Analytics and Performance
+    this.analytics = null;
+    this.performanceMetrics = null;
+    
+    // Error handling
     this.error = null;
+    this.status = 'initialized';
   }
 
-  // Update methods for each node
-  updateTopics(topics) {
-    this.topics = topics;
+  // User and Authentication
+  updateUser(userId, accessToken, refreshToken, linkedinProfileId) {
+    this.userId = userId;
+    this.accessToken = accessToken;
+    this.refreshToken = refreshToken;
+    this.linkedinProfileId = linkedinProfileId;
+    this.status = 'authenticated';
     return this;
   }
 
-  updateContent(content) {
-    this.content = content;
+  // Profile Analysis
+  updateProfileAnalysis(analysis) {
+    this.profileAnalysis = analysis;
+    this.status = 'profile_analyzed';
     return this;
   }
 
-  updateFormattedContent(formattedContent) {
-    this.formattedContent = formattedContent;
+  // Industry Research
+  updateIndustryResearch(research) {
+    this.industryResearch = research;
+    this.status = 'research_completed';
     return this;
   }
 
-  updateOutputFile(outputFile) {
-    this.outputFile = outputFile;
+  // Content Strategy
+  updateContentStrategy(strategyData) {
+    this.contentStrategy = strategyData.strategy;
+    this.calendar = strategyData.calendar;
+    this.status = 'strategy_developed';
     return this;
   }
 
+  // Automated Posting
+  updateAutomatedPosting(postingData) {
+    this.automatedPosting = postingData;
+    this.status = 'automation_configured';
+    return this;
+  }
+
+  // Analytics
+  updateAnalytics(analytics) {
+    this.analytics = analytics;
+    this.status = 'analytics_updated';
+    return this;
+  }
+
+  updatePerformanceMetrics(metrics) {
+    this.performanceMetrics = metrics;
+    this.status = 'performance_tracked';
+    return this;
+  }
+
+  // Error handling
   setError(error) {
     this.error = error;
+    this.status = 'error';
+    return this;
+  }
+
+  clearError() {
+    this.error = null;
     return this;
   }
 
   // Validation methods
-  isValid() {
-    return this.brandTheme && 
-           this.duration > 0 && 
-           this.duration <= 30 &&
-           !this.error;
+  validateAuthentication() {
+    if (!this.userId || !this.accessToken) {
+      throw new Error('User authentication required');
+    }
+    return true;
   }
 
-  hasTopics() {
-    return this.topics.length > 0;
+  validateProfileAnalysis() {
+    if (!this.profileAnalysis) {
+      throw new Error('Profile analysis required');
+    }
+    return true;
   }
 
-  hasContent() {
-    return this.content.length > 0;
+  validateIndustryResearch() {
+    if (!this.industryResearch) {
+      throw new Error('Industry research required');
+    }
+    return true;
   }
 
-  isComplete() {
-    return this.formattedContent.length > 0 && this.outputFile;
+  validateContentStrategy() {
+    if (!this.contentStrategy || !this.calendar) {
+      throw new Error('Content strategy required');
+    }
+    return true;
   }
 
-  // Getter methods
-  getBrandTheme() {
-    return this.brandTheme;
+  // Getter methods for easy access
+  getUserInfo() {
+    return {
+      userId: this.userId,
+      linkedinProfileId: this.linkedinProfileId,
+      status: this.status
+    };
   }
 
-  getDuration() {
-    return this.duration;
+  getProfileInfo() {
+    return this.profileAnalysis?.basic || null;
   }
 
-  getTopics() {
-    return this.topics;
+  getProfessionalInfo() {
+    return this.profileAnalysis?.professional || null;
   }
 
-  getContent() {
-    return this.content;
+  getSkills() {
+    return this.profileAnalysis?.skills || null;
   }
 
-  getFormattedContent() {
-    return this.formattedContent;
+  getExperience() {
+    return this.profileAnalysis?.experience || null;
   }
 
-  getOutputFile() {
-    return this.outputFile;
+  getBrandInsights() {
+    return this.profileAnalysis?.brandInsights || null;
   }
 
-  getError() {
-    return this.error;
+  getContentStrategy() {
+    return this.contentStrategy || null;
   }
 
-  // Export for CSV
-  toCSVData() {
-    return this.formattedContent.map((item, index) => ({
-      Day: index + 1,
-      Topic: item.topic,
-      Caption: item.caption,
-      Hashtags: item.hashtags
-    }));
+  getCalendar() {
+    return this.calendar || null;
+  }
+
+  getAutomatedPosting() {
+    return this.automatedPosting || null;
+  }
+
+  getAnalytics() {
+    return this.analytics || null;
+  }
+
+  getPerformanceMetrics() {
+    return this.performanceMetrics || null;
+  }
+
+  // Status checking methods
+  isAuthenticated() {
+    return this.status === 'authenticated' || this.status.startsWith('profile_');
+  }
+
+  isProfileAnalyzed() {
+    return this.status === 'profile_analyzed' || this.status.startsWith('research_');
+  }
+
+  isResearchCompleted() {
+    return this.status === 'research_completed' || this.status.startsWith('strategy_');
+  }
+
+  isStrategyDeveloped() {
+    return this.status === 'strategy_developed' || this.status.startsWith('automation_');
+  }
+
+  isAutomationConfigured() {
+    return this.status === 'automation_configured' || this.status.startsWith('analytics_');
+  }
+
+  hasError() {
+    return this.error !== null;
+  }
+
+  // Export methods for reporting
+  exportSummary() {
+    return {
+      user: this.getUserInfo(),
+      profile: this.getProfileInfo(),
+      professional: this.getProfessionalInfo(),
+      skills: this.getSkills(),
+      experience: this.getExperience(),
+      brandInsights: this.getBrandInsights(),
+      contentStrategy: this.getContentStrategy(),
+      calendar: this.getCalendar(),
+      automatedPosting: this.getAutomatedPosting(),
+      analytics: this.getAnalytics(),
+      performanceMetrics: this.getPerformanceMetrics(),
+      status: this.status,
+      error: this.error
+    };
+  }
+
+  // Reset method for new sessions
+  reset() {
+    this.userId = null;
+    this.accessToken = null;
+    this.refreshToken = null;
+    this.linkedinProfileId = null;
+    this.profileAnalysis = null;
+    this.industryResearch = null;
+    this.contentStrategy = null;
+    this.calendar = null;
+    this.automatedPosting = null;
+    this.analytics = null;
+    this.performanceMetrics = null;
+    this.error = null;
+    this.status = 'initialized';
+    return this;
   }
 } 
